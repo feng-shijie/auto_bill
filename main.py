@@ -48,8 +48,6 @@ def check_balance():
     elif ((Email.m_balance_water       != None and Email.m_now_water       > Email.m_min_tip) or 
           (Email.m_balance_electricity != None and Email.m_now_electricity > Email.m_min_tip)):
         Email.m_bill_status         = True
-        Email.m_balance_water       = Email.m_now_water
-        Email.m_balance_electricity = Email.m_now_electricity
         bill.send_email()
         Email.m_balance_water       = None
         Email.m_balance_electricity = None
