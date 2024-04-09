@@ -7,16 +7,14 @@ import sys
 from bill_class import DB
 
 def create_db():
-    _dir = sys.path[0] + "/db"
-    if not os.path.isdir(_dir):
-        _cmd = "mkdir " + _dir
+    if not os.path.isdir(DB.m_db_path):
+        _cmd = "mkdir " + DB.m_db_path
         os.system(_cmd)
 
-    _dir = _dir + "/user.db"
-    if os.path.exists(_dir):    return
+    if os.path.exists(DB.m_db_path + DB.m_db_name):    return
     else:   print("create ./db/user.db!")
 
-    m_db = sqlite3.connect(_dir)
+    m_db = sqlite3.connect(DB.m_db_path + DB.m_db_name)
     _db = m_db.cursor()
     _db.execute("create table now(email,name);")
     _db.execute("create table bill(name,balance);")

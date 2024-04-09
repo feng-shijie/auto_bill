@@ -7,6 +7,8 @@ from enum import Enum
 class DB:
     m_db            = None
     _db             = None
+    m_db_path       = '../db'
+    m_db_name       = '/user.db'
 
     table_user      = "email_user"
     table_admin     = "admin"
@@ -24,7 +26,7 @@ class DB:
     type_balance    = "balance"
     def init():
         # DB.m_db     = sqlite3.connect(f"{sys.path[0]}/db/user.db", check_same_thread=False)
-        DB.m_db     = sqlite3.connect(f"../db/user.db", check_same_thread=False)
+        DB.m_db     = sqlite3.connect(DB.m_db_path + DB.m_db_name, check_same_thread=False)
         DB._db      = DB.m_db.cursor()
 
 class Email:
