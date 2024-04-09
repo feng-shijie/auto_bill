@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-import sqlite3
 import sys
+import sqlite3
 from enum import Enum
 
 class DB:
@@ -23,7 +23,8 @@ class DB:
     type_password   = "password"
     type_balance    = "balance"
     def init():
-        DB.m_db     = sqlite3.connect(f"{sys.path[0]}/db/user.db", check_same_thread=False)
+        # DB.m_db     = sqlite3.connect(f"{sys.path[0]}/db/user.db", check_same_thread=False)
+        DB.m_db     = sqlite3.connect(f"../db/user.db", check_same_thread=False)
         DB._db      = DB.m_db.cursor()
 
 class Email:
