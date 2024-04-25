@@ -12,7 +12,7 @@ def create_db():
         os.system(_cmd)
 
     if os.path.exists(DB.m_db_path + DB.m_db_name):    return
-    else:   print("create ./db/user.db!")
+    else:   print(f"create {DB.m_db_path + DB.m_db_name}!")
 
     m_db = sqlite3.connect(DB.m_db_path + DB.m_db_name)
     _db = m_db.cursor()

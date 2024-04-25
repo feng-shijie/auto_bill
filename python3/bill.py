@@ -6,6 +6,7 @@ import smtplib
 import requests
 from bs4 import BeautifulSoup
 
+from tools import Tools_Log
 from bill_class import DB
 from bill_class import Email
 
@@ -47,6 +48,9 @@ def get_balance():
 			i_balance = int(str(balanc)[str(balanc).find(':') + 1 : str(balanc).rfind('.')])
 			if	 str(curr_info[0]) == 'water':			Email.m_now_water 		= i_balance
 			elif str(curr_info[0]) == 'electricity':	Email.m_now_electricity = i_balance
+
+	Tools_Log.g().log_info(str(f"now_water = {Email.m_now_water}"))
+	Tools_Log.g().log_info(str(f"now_electricity = {Email.m_now_electricity}"))
 
 	DB._db.execute(f"UPDATE {DB.table_bill} SET {DB.type_balance} = '{Email.m_now_water}' WHERE {DB.type_name} = 'water';")
 	DB._db.execute(f"UPDATE {DB.table_bill} SET {DB.type_balance} = '{Email.m_now_electricity}' WHERE {DB.type_name} = 'electricity';")
@@ -118,6 +122,8 @@ def send_email():
 	#需要缴费只给一个人发送email, 充值成功给所有人发丝email
 	if Email.m_bill_status:	_bill_text = email_all()
 	else:					_bill_text = email_only()
+
+	Tools_Log.g().log_info(_bill_text)
 
 	_text_format = MIMEText(_bill_text, 'plain', 'utf-8')
 	email_msg.attach(_text_format)

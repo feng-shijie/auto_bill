@@ -12,6 +12,7 @@ import bill
 import create
 import interactive
 
+from tools import Tools_Log
 from bill_class import DB
 from bill_class import Email
 from bill_class import Index
@@ -21,13 +22,16 @@ def check_balance():
     while True:
         _res = os.system("ping -c 1 www.baidu.com")
         if _res == 0:   break
-        print("网络错误")
+        if Tools_Log.m_out_mode:    Tools_Log.g().log_error("网络错误")
+        else:                       print("网络错误")
         time.sleep(60)
 
 # 修改一下，只有一个url也可以
     bill.get_balance()
     if Email.m_now_water == None and Email.m_now_electricity == None:
-        print("get water and electricity bill balance fail, please check url")
+        if Tools_Log.m_out_mode:
+            Tools_Log.g().log_error("get water and electricity bill balance fail, please check url")
+        else:   print("get water and electricity bill balance fail, please check url")
         return
 
     i_now_hour = datetime.now().hour
@@ -67,7 +71,11 @@ def update_now_user():
     DB._db.execute(f"DELETE FROM {DB.table_now}")
     DB._db.execute(f"INSERT INTO {DB.table_now} VALUES('{Email.m_now_user[Index._EMAIL]}', '{Email.m_now_user[Index._NAME]}');")
     DB.m_db.commit()
-    print(f"now user to update: email: {Email.m_now_user[Index._EMAIL]}, name: {Email.m_now_user[Index._NAME]}")
+
+    if Tools_Log.m_out_mode:
+        Tools_Log.g().log_info(f"now user to update: email: {Email.m_now_user[Index._EMAIL]}, name: {Email.m_now_user[Index._NAME]}")
+    else:
+        print(f"now user to update: email: {Email.m_now_user[Index._EMAIL]}, name: {Email.m_now_user[Index._NAME]}")
 
 def add_now_user():
     sql_res = DB._db.execute(f"SELECT * FROM {DB.table_user}")
@@ -78,14 +86,20 @@ def add_now_user():
     Email.m_now_user = l_user[0]
     DB._db.execute(f"INSERT INTO {DB.table_now} VALUES('{Email.m_now_user[Index._EMAIL]}','{Email.m_now_user[Index._NAME]}');")
     DB.m_db.commit()
-    print("now user is null, Add the first user as the recharge user.")
-    print(f"email: {Email.m_now_user[Index._EMAIL]}, name: {Email.m_now_user[Index._NAME]}")
+
+    if Tools_Log.m_out_mode:
+        Tools_Log.g().log_info("now user is null, Add the first user as the recharge user.")
+        Tools_Log.g().log_info(f"NOW USER: email: {Email.m_now_user[Index._EMAIL]}, name: {Email.m_now_user[Index._NAME]}")
+    else:
+        print("now user is null, Add the first user as the recharge user.")
+        print(f"email: {Email.m_now_user[Index._EMAIL]}, name: {Email.m_now_user[Index._NAME]}")
 
 def check_now_user():
     res = DB._db.execute("SELECT * FROM now")
     l_now = list(res)
     if len(l_now):
         Email.m_now_user = l_now[0]
+        Tools_Log.g().log_info(f"NOW USER: email: {Email.m_now_user[Index._EMAIL]}, name: {Email.m_now_user[Index._NAME]}")
         if Email.m_bill_status:     update_now_user()
     else:   add_now_user()
 
@@ -109,5 +123,6 @@ if __name__ == '__main__':
             sys.exit()
         t_thread = threading.Thread(target = interactive.init(), args = (0,))
     else:   t_thread = threading.Thread(target = time_thread, args = (0,))
+    # time_thread()
     t_thread.start()
     t_thread.join()

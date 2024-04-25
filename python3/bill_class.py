@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
-import sys
+# import sys
 import sqlite3
-from enum import Enum
+# from enum import Enum
 
 class DB:
     m_db            = None
